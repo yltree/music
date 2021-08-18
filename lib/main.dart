@@ -34,8 +34,8 @@ class MyApp extends StatelessWidget {
           primaryColor: Colors.white,
         ),
         home: Scaffold(
-          appBar: AppBar(title: Text('data')),
-          body: Center(
+          appBar: AppBar(title: const Text('data')),
+          body: const Center(
             child: ElevatedButton(
                 onPressed: _searchYoutube, child: Icon(Icons.search)),
           ),
