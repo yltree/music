@@ -10,11 +10,14 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search page'),
+        title: const TextField(
+          decoration: InputDecoration(border: OutlineInputBorder()),
+        ),
+        actions: [IconButton(onPressed: null, icon: Icon(Icons.search))],
       ),
       body: const Center(
         child: Text(
-          'This is the Search page',
+          'This is the next page',
           style: TextStyle(fontSize: 24),
         ),
       ),
