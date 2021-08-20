@@ -1,4 +1,14 @@
+// dart files
+import 'dart:async';
+import 'dart:io' show Platform;
+
+// framework
 import 'package:flutter/material.dart';
+
+// packages
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter_file_manager/flutter_file_manager.dart';
+import 'package:simple_permissions/simple_permissions.dart';
 
 import 'package:music/src/components/music_list.dart';
 import 'package:music/src/views/search.dart';
@@ -9,27 +19,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final items = List<String>.generate(100, (i) => "Item $i");
+  var items = [];
 
   void _serchPage() {
-    // Navigator.push(context,
-    //     MaterialPageRoute<void>(builder: (BuildContext context) {
-    //   return SearchPage();
-    // }));
-    Navigator.of(context).push(_createRoute());
-  }
-
-  Route _createRoute() {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => SearchPage(),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        const begin = Offset(0.0, 1.0);
-        const end = Offset.zero;
-        final tween = Tween(begin: begin, end: end);
-        final offsetAnimation = animation.drive(tween);
-        return child;
-      },
-    );
+    Navigator.push(context,
+        MaterialPageRoute<void>(builder: (BuildContext context) {
+      return SearchPage();
+    }));
   }
 
   void _menuPage() {
@@ -50,8 +46,33 @@ class _HomeState extends State<Home> {
     ));
   }
 
+  String _getFileName(file) {
+    var slashes = Platform.isWindows ? '\\' : '/';
+
+    return file.path.split(slashes).last;
+  }
+
+  _searchFile() async {
+    var root = await getDownloadsDirectory();
+    // var files = await FileManager(root: root).walk().toList();
+    items = await FileManager(root: root).filesTree(
+        excludedPaths: ["/storage/emulated/0/Android"],
+        extensions: ["m4a", "flac", "wav", "wma", "aac", "mp3", "mp4"]);
+
+    // return files;
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _searchFile();
+  }
+
   @override
   Widget build(BuildContext context) {
+    SimplePermissions.requestPermission(Permission.ReadExternalStorage);
     return Stack(
       children: <Widget>[
         Image.asset(
@@ -64,7 +85,7 @@ class _HomeState extends State<Home> {
             backgroundColor: Colors.transparent,
             appBar: AppBar(
               title: const Text(
-                'Music',
+                'Local Music',
                 style: TextStyle(color: Colors.white),
               ),
               centerTitle: true,
@@ -87,7 +108,48 @@ class _HomeState extends State<Home> {
                 )
               ],
             ),
-            body: MusicList(items: items))
+            body: ListView.builder(
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  decoration: const BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(color: Colors.white, width: 0.2))),
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                          child: Container(
+                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: Column(
+                          children: [
+                            Column(
+                              children: [
+                                Text(
+                                  _getFileName(items[index]),
+                                  style: TextStyle(color: Colors.white),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      )),
+                      IconButton(
+                          onPressed: () {
+                            print('object $index');
+                          },
+                          icon: const Icon(
+                            Icons.play_circle,
+                            color: Colors.white,
+                          ))
+                    ],
+                  ),
+                );
+              },
+            ))
       ],
     );
   }
