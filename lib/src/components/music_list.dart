@@ -5,7 +5,7 @@ class MusicList extends StatelessWidget {
       : super(key: key);
 
   final String showType;
-  final List items;
+  final items;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class MusicList extends StatelessWidget {
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.white, width: 3)),
                 child: Image.network(
-                  'https://i.ytimg.com/vi/RtJUX1t2WLY/hqdefault.jpg?sqp=-oaymwEXCOADEI4CSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLDBj6vzZPbYIHmOVil0a12FkTxpcg',
+                  items[index].thumbnail,
                   width: 120,
                 ),
               ),
@@ -36,12 +36,12 @@ class MusicList extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          items[index],
+                          items[index].title,
                           style: TextStyle(color: Colors.white),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        Text('by $index',
+                        Text('by ' + items[index].author,
                             style: TextStyle(color: Colors.white)),
                       ],
                     ),
@@ -87,7 +87,7 @@ class MusicList extends StatelessWidget {
               )),
               IconButton(
                   onPressed: () {
-                    print('object $index');
+                    print('object ' + items[index].id);
                   },
                   icon: Icon(
                     showType == 'local' ? Icons.play_circle : Icons.download,

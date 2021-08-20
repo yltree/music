@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:music/src/components/music_list.dart';
+import 'package:music/src/api/video.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -7,15 +8,14 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  List items = [];
+  var items = [];
 
   final searchControler = TextEditingController();
 
-  void _search(value) {
-    setState(() {
-      items.addAll(
-          List<String>.generate(10, (i) => searchControler.text + " $i"));
-    });
+  void _search(value) async {
+    var video = Video();
+    await video.search(value).then((e) => {items = e});
+    setState(() {});
   }
 
   @override
@@ -59,6 +59,7 @@ class _SearchPageState extends State<SearchPage> {
                 child: TextField(
                     controller: searchControler,
                     textInputAction: TextInputAction.search,
+                    autofocus: true,
                     onSubmitted: _search,
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.white),

@@ -1,5 +1,5 @@
 // dart files
-import 'dart:async';
+// import 'dart:async';
 import 'dart:io' show Platform;
 
 // framework
@@ -8,9 +8,8 @@ import 'package:flutter/material.dart';
 // packages
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_file_manager/flutter_file_manager.dart';
-import 'package:simple_permissions/simple_permissions.dart';
+// import 'package:simple_permissions/simple_permissions.dart';
 
-import 'package:music/src/components/music_list.dart';
 import 'package:music/src/views/search.dart';
 
 class Home extends StatefulWidget {
@@ -53,13 +52,20 @@ class _HomeState extends State<Home> {
   }
 
   _searchFile() async {
-    var root = await getDownloadsDirectory();
-    // var files = await FileManager(root: root).walk().toList();
+    var root = null;
+
+    if (Platform.isIOS) {
+      root = await getApplicationDocumentsDirectory();
+    } else {
+      root = await getDownloadsDirectory();
+    }
+
+    print(root);
+
     items = await FileManager(root: root).filesTree(
         excludedPaths: ["/storage/emulated/0/Android"],
         extensions: ["m4a", "flac", "wav", "wma", "aac", "mp3", "mp4"]);
 
-    // return files;
     setState(() {});
   }
 
@@ -72,7 +78,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    SimplePermissions.requestPermission(Permission.ReadExternalStorage);
+    // SimplePermissions.requestPermission(Permission.ReadExternalStorage);
     return Stack(
       children: <Widget>[
         Image.asset(
@@ -91,13 +97,13 @@ class _HomeState extends State<Home> {
               centerTitle: true,
               backgroundColor: Colors.transparent,
               elevation: 0.0,
-              leading: IconButton(
-                icon: const Icon(
-                  Icons.menu_outlined,
-                  color: Colors.white,
-                ),
-                onPressed: _menuPage,
-              ),
+              // leading: IconButton(
+              //   icon: const Icon(
+              //     Icons.menu_outlined,
+              //     color: Colors.white,
+              //   ),
+              //   onPressed: _menuPage,
+              // ),
               actions: [
                 IconButton(
                   icon: const Icon(
