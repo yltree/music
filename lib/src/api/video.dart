@@ -23,4 +23,6 @@ class Video {
     //     print(s);
     //   });
   }
+
+  void download(id) {}
 }
